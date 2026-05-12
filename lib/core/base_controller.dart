@@ -1,0 +1,15 @@
+import 'package:get/get.dart';
+
+class BaseController extends GetxController {
+  final isLoading = false.obs;
+  final errorMessage = RxnString();
+
+  void setLoading(bool value) {
+    isLoading.value = value;
+  }
+
+  void setError(String? message) {
+    errorMessage.value = message;
+  }
+}
+

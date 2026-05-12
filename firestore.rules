@@ -1,0 +1,35 @@
+// MindPath Firestore Security Rules
+// Each user can only access documents they own.
+// Ownership is determined by matching request.auth.uid to:
+//   - the document ID in /users/{userId}
+//   - the userId field in mood_records, journals, activity_logs
+// All access requires authentication (request.auth != null).
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // users — only the owner can read or write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // mood_records — authenticated user can create records and read only their own
+    match /mood_records/{recordId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // journals — full CRUD but only own documents
+    match /journals/{journalId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // activity_logs — create and read own records only
+    match /activity_logs/{logId} {
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333096362543",
+    "project_id": "mindpath-78281",
+    "storage_bucket": "mindpath-78281.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333096362543:android:5b1d5470432a3b36449cda",
+        "android_client_info": {
+          "package_name": "com.mind.path.mindpath"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDArM6iO5vj7XWh-7exdxfvNAHiGI99zg4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
