@@ -76,6 +76,12 @@ const Map<String, String> urPK = {
   'auth_already_have_account': 'کیا آپ کا اکاؤنٹ موجود ہے؟ ',
   'auth_join_sanctuary': 'کمیونٹی میں شامل ہوں',
 
+  'drawer_menu': 'مینو',
+  'drawer_share_app': 'ایپ شیئر کریں',
+  'drawer_more_apps': 'مزید ایپس',
+  'drawer_privacy_policy': 'رازداری پالیسی',
+  'share_app_text': 'مائنڈ پاتھ کو چیک کریں — آپ کا اے آئی ذہنی بہبود ساتھی!',
+
   'profile_title': 'پروفائل',
   'profile_language': 'زبان',
   'profile_english': 'English',

@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/app_routes.dart';
 import 'package:mindpath/core/models/mood_record.dart';
+import 'package:mindpath/screens/dashboard/dashboard_controller.dart';
 import 'package:mindpath/screens/insights/insights_controller.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:mindpath/widgets/custom_button.dart';
 
 class InsightsView extends GetView<InsightsController> {
   const InsightsView({super.key});
+
+  void _openDrawer() {
+    final dashboardController = Get.find<DashboardController>();
+    dashboardController.openDrawer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,68 +29,90 @@ class InsightsView extends GetView<InsightsController> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    controller.title,
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  floating: true,
+                  backgroundColor: Colors.transparent,
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.menu_rounded,
                       color: AppColors.authTextPrimary,
                     ),
+                    onPressed: _openDrawer,
                   ),
-                  const SizedBox(height: 12),
-                  _PeriodToggle(controller: controller),
-                  const SizedBox(height: 14),
-                  _EmotionalLandscapeCard(controller: controller),
-                  const SizedBox(height: 18),
-                  _JournalHistoryHeader(controller: controller),
-                  const SizedBox(height: 10),
-                  Obx(() {
-                    final items = controller.journalHistory;
-                    if (items.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'No journal history yet. Add a mood check-in to see insights here.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            height: 1.4,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.authTextSecondary.withValues(
-                              alpha: 0.95,
-                            ),
-                          ),
+                  title: Text(
+                    'app_name'.tr,
+                    style: const TextStyle(color: AppColors.authTextPrimary),
+                  ),
+                  centerTitle: true,
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
+                  sliver: SliverList.list(
+                    children: [
+                      Text(
+                        controller.title,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.authTextPrimary,
                         ),
-                      );
-                    }
-                    return Column(
-                      children: [
-                        for (final entry in items) ...[
-                          _JournalEntryCard(
-                            entry: entry,
-                            onTap: () {
-                              Get.toNamed(
-                                AppRoutes.journalEntryDetail,
-                                arguments: {
-                                  'record': entry,
-                                  'openInsight': true,
+                      ),
+                      const SizedBox(height: 12),
+                      _PeriodToggle(controller: controller),
+                      const SizedBox(height: 14),
+                      _QuickStatsGrid(controller: controller),
+                      const SizedBox(height: 14),
+                      _EmotionalLandscapeCard(controller: controller),
+                      const SizedBox(height: 18),
+                      _JournalHistoryHeader(controller: controller),
+                      const SizedBox(height: 10),
+                      Obx(() {
+                        final items = controller.journalHistory;
+                        if (items.isEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              'No journal history yet. Add a mood check-in to see insights here.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.4,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.authTextSecondary.withValues(
+                                  alpha: 0.95,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return Column(
+                          children: [
+                            for (final entry in items) ...[
+                              _JournalEntryCard(
+                                entry: entry,
+                                onTap: () {
+                                  Get.toNamed(
+                                    AppRoutes.journalEntryDetail,
+                                    arguments: {
+                                      'record': entry,
+                                      'openInsight': true,
+                                    },
+                                  );
                                 },
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ],
-                    );
-                  }),
-                  const SizedBox(height: 6),
-                  _WeeklyMilestoneCard(controller: controller),
-                ],
-              ),
+                              ),
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                        );
+                      }),
+                      const SizedBox(height: 6),
+                      _WeeklyMilestoneCard(controller: controller),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -270,6 +298,133 @@ class _EmotionalLandscapeCard extends StatelessWidget {
               prefixIcon: Icons.ios_share_rounded,
               height: 52,
               foregroundColor: AppColors.dashboardBrand,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickStatsGrid extends StatelessWidget {
+  const _QuickStatsGrid({required this.controller});
+
+  final InsightsController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final avg = (controller.averageScore.value * 100).round();
+      final stability = (controller.stability.value * 100).round();
+      final checkins = controller.records.length;
+      final label = controller.averageMoodValue;
+
+      return GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        children: [
+          _QuickStatCard(
+            icon: Icons.sentiment_satisfied_rounded,
+            title: 'Average Mood',
+            value: '$avg%',
+            subtitle: label,
+          ),
+          _QuickStatCard(
+            icon: Icons.bar_chart_rounded,
+            title: 'Stability',
+            value: '$stability%',
+            subtitle: 'Consistency',
+          ),
+          _QuickStatCard(
+            icon: Icons.calendar_today_rounded,
+            title: 'Check-ins',
+            value: checkins.toString(),
+            subtitle: 'Total entries',
+          ),
+          _QuickStatCard(
+            icon: Icons.auto_awesome_rounded,
+            title: 'Streak',
+            value: '7',
+            subtitle: 'Current streak',
+          ),
+        ],
+      );
+    });
+  }
+}
+
+class _QuickStatCard extends StatelessWidget {
+  const _QuickStatCard({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: 0.06),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(icon, size: 22, color: AppColors.primary),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.authTextSecondary.withValues(alpha: 0.9),
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: AppColors.authTextPrimary,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.authTextSecondary.withValues(alpha: 0.8),
+              ),
             ),
           ],
         ),

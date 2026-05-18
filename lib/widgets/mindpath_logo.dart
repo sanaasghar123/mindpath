@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
 
-class MindPathLogoMark extends StatelessWidget {
+class MindPathLogoMark extends StatefulWidget {
   const MindPathLogoMark({super.key, required this.primary});
 
   final Color primary;
+
+  @override
+  State<MindPathLogoMark> createState() => _MindPathLogoMarkState();
+}
+
+class _MindPathLogoMarkState extends State<MindPathLogoMark>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _turns;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    )..repeat();
+    _turns = CurvedAnimation(parent: _controller, curve: Curves.linear);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +38,12 @@ class MindPathLogoMark extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          CustomPaint(
-            size: const Size(108, 108),
-            painter: ArcRingPainter(color: primary),
+          RotationTransition(
+            turns: _turns,
+            child: CustomPaint(
+              size: const Size(108, 108),
+              painter: ArcRingPainter(color: widget.primary),
+            ),
           ),
           DecoratedBox(
             decoration: BoxDecoration(
@@ -25,7 +53,7 @@ class MindPathLogoMark extends StatelessWidget {
             child: SizedBox(
               width: 66,
               height: 66,
-              child: Icon(Icons.spa_rounded, color: primary, size: 32),
+              child: Icon(Icons.spa_rounded, color: widget.primary, size: 32),
             ),
           ),
         ],
@@ -94,4 +122,3 @@ class ArcRingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant ArcRingPainter oldDelegate) => oldDelegate.color != color;
 }
-

@@ -76,6 +76,12 @@ const Map<String, String> enUS = {
   'auth_already_have_account': 'Already have an account? ',
   'auth_join_sanctuary': 'Join the Sanctuary',
 
+  'drawer_menu': 'Menu',
+  'drawer_share_app': 'Share App',
+  'drawer_more_apps': 'More Apps',
+  'drawer_privacy_policy': 'Privacy Policy',
+  'share_app_text': 'Check out MindPath - your AI mental wellness companion!',
+
   'profile_title': 'Profile',
   'profile_language': 'Language',
   'profile_english': 'English',

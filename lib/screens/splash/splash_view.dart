@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/controllers/auth_controller.dart';
@@ -20,14 +22,28 @@ class SplashView extends GetView<SplashController> {
       body: Stack(
         children: [
           const Positioned.fill(
+            child: Image(
+              image: AssetImage('assets/splash_bg.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned.fill(
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: const ColoredBox(color: Colors.transparent),
+              ),
+            ),
+          ),
+          Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.bgA,
-                    AppColors.bgB,
+                    AppColors.bgA.withValues(alpha: 0.55),
+                    AppColors.bgB.withValues(alpha: 0.55),
                   ],
                 ),
               ),

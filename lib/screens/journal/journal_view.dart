@@ -21,60 +21,57 @@ class JournalView extends GetView<JournalController> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
-            child: SingleChildScrollView(
+            child: ListView(
               padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _AiGuideCard(controller: controller),
-                  const SizedBox(height: 18),
-                  for (final activity in controller.journalActivities) ...[
-                    _ActivityCard(
-                      activity: activity,
-                      onStart: () => controller.startActivity(activity),
-                    ),
-                    const SizedBox(height: 14),
-                  ],
-                  const SizedBox(height: 6),
-                  _HistoryHeader(controller: controller),
-                  const SizedBox(height: 10),
-                  Obx(() {
-                    final items = controller.journalHistory;
-                    if (items.isEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'journal_empty'.tr,
-                          style: TextStyle(
-                            fontSize: 12,
-                            height: 1.4,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.authTextSecondary.withValues(
-                              alpha: 0.95,
-                            ),
+              children: [
+                _AiGuideCard(controller: controller),
+                const SizedBox(height: 18),
+                for (final activity in controller.journalActivities) ...[
+                  _ActivityCard(
+                    activity: activity,
+                    onStart: () => controller.startActivity(activity),
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                const SizedBox(height: 6),
+                _HistoryHeader(controller: controller),
+                const SizedBox(height: 10),
+                Obx(() {
+                  final items = controller.journalHistory;
+                  if (items.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        'journal_empty'.tr,
+                        style: TextStyle(
+                          fontSize: 12,
+                          height: 1.4,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.authTextSecondary.withValues(
+                            alpha: 0.95,
                           ),
                         ),
-                      );
-                    }
-                    return Column(
-                      children: [
-                        for (final entry in items) ...[
-                          _JournalEntryCard(
-                            title: entry.title.isEmpty
-                                ? 'journal_fallback_title'.tr
-                                : entry.title,
-                            dateLabel: _formatDate(entry.createdAt?.toDate()),
-                            preview: entry.text,
-                            emotion: entry.emotion,
-                            onTap: () => controller.openJournalDetail(entry),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ],
+                      ),
                     );
-                  }),
-                ],
-              ),
+                  }
+                  return Column(
+                    children: [
+                      for (final entry in items) ...[
+                        _JournalEntryCard(
+                          title: entry.title.isEmpty
+                              ? 'journal_fallback_title'.tr
+                              : entry.title,
+                          dateLabel: _formatDate(entry.createdAt?.toDate()),
+                          preview: entry.text,
+                          emotion: entry.emotion,
+                          onTap: () => controller.openJournalDetail(entry),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ],
+                  );
+                }),
+              ],
             ),
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/base_controller.dart';
 
@@ -6,6 +7,8 @@ class DashboardController extends BaseController {
 
   final initialMood = RxnString();
   final initialJournal = ''.obs;
+
+  VoidCallback? openDrawerCallback;
 
   @override
   void onInit() {
@@ -21,5 +24,9 @@ class DashboardController extends BaseController {
 
   void setTab(int index) {
     selectedIndex.value = index;
+  }
+
+  void openDrawer() {
+    openDrawerCallback?.call();
   }
 }

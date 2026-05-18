@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/controllers/notification_controller.dart';
 import 'package:mindpath/features/profile/controllers/language_controller.dart';
+import 'package:mindpath/screens/dashboard/dashboard_controller.dart';
 import 'package:mindpath/screens/profile/profile_controller.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:mindpath/widgets/custom_button.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
+
+  void _openDrawer() {
+    final dashboardController = Get.find<DashboardController>();
+    dashboardController.openDrawer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,161 +29,181 @@ class ProfileView extends GetView<ProfileController> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _ProfileHeader(controller: controller),
-                  const SizedBox(height: 22),
-                  const _SectionTitle('profile_section_general'),
-                  const SizedBox(height: 10),
-                  _SettingsGroup(
+            child: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  floating: true,
+                  backgroundColor: Colors.transparent,
+                  leading: IconButton(
+                    icon: const Icon(
+                      Icons.menu_rounded,
+                      color: AppColors.authTextPrimary,
+                    ),
+                    onPressed: _openDrawer,
+                  ),
+                  title: Text(
+                    'app_name'.tr,
+                    style: const TextStyle(color: AppColors.authTextPrimary),
+                  ),
+                  centerTitle: true,
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
+                  sliver: SliverList.list(
                     children: [
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.edit_rounded,
-                          backgroundColor: const Color(0xFFEFF4FF),
-                          iconColor: AppColors.dashboardBrand,
-                        ),
-                        titleKey: 'profile_edit_profile',
-                        trailing: const Icon(
-                          Icons.chevron_right_rounded,
-                          color: AppColors.authTextSecondary,
-                        ),
-                        onTap: controller.openEditProfile,
-                      ),
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.language_rounded,
-                          backgroundColor: const Color(0xFFEAF1FF),
-                          iconColor: AppColors.dashboardBrand,
-                        ),
-                        titleKey: 'profile_language',
-                        trailing: const _LanguageToggle(),
-                      ),
-                      Obx(() {
-                        final notificationController =
-                            Get.find<NotificationController>();
-                        return SwitchListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                          ),
-                          secondary: const _CircleIcon(
-                            icon: Icons.alarm_rounded,
-                            backgroundColor: Color(0xFFEFFDF4),
-                            iconColor: Color(0xFF16A34A),
-                          ),
-                          title: Text(
-                            'reminders'.tr,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.authTextPrimary,
+                      _ProfileHeader(controller: controller),
+                      const SizedBox(height: 22),
+                      const _SectionTitle('profile_section_general'),
+                      const SizedBox(height: 10),
+                      _SettingsGroup(
+                        children: [
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.edit_rounded,
+                              backgroundColor: const Color(0xFFEFF4FF),
+                              iconColor: AppColors.dashboardBrand,
                             ),
+                            titleKey: 'profile_edit_profile',
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              color: AppColors.authTextSecondary,
+                            ),
+                            onTap: controller.openEditProfile,
                           ),
-                          subtitle: Text(
-                            'reminders_subtitle'.tr,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.authTextSecondary.withValues(
-                                alpha: 0.95,
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.language_rounded,
+                              backgroundColor: const Color(0xFFEAF1FF),
+                              iconColor: AppColors.dashboardBrand,
+                            ),
+                            titleKey: 'profile_language',
+                            trailing: const _LanguageToggle(),
+                          ),
+                          Obx(() {
+                            final notificationController =
+                                Get.find<NotificationController>();
+                            return SwitchListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
                               ),
+                              secondary: const _CircleIcon(
+                                icon: Icons.alarm_rounded,
+                                backgroundColor: Color(0xFFEFFDF4),
+                                iconColor: Color(0xFF16A34A),
+                              ),
+                              title: Text(
+                                'reminders'.tr,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.authTextPrimary,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'reminders_subtitle'.tr,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.authTextSecondary.withValues(
+                                    alpha: 0.95,
+                                  ),
+                                ),
+                              ),
+                              value:
+                                  notificationController.remindersEnabled.value,
+                              onChanged: notificationController.toggleReminders,
+                              activeThumbColor: Colors.white,
+                              activeTrackColor: AppColors.dashboardBrand
+                                  .withValues(alpha: 0.55),
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: Colors.black.withValues(
+                                alpha: 0.12,
+                              ),
+                            );
+                          }),
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.dark_mode_rounded,
+                              backgroundColor: const Color(0xFFF3E8FF),
+                              iconColor: const Color(0xFF7C3AED),
                             ),
+                            titleKey: 'profile_dark_mode',
+                            trailing: Obx(() {
+                              return Switch(
+                                value: controller.darkModeEnabled.value,
+                                onChanged: controller.setDarkMode,
+                                activeThumbColor: Colors.white,
+                                activeTrackColor: AppColors.dashboardBrand,
+                                inactiveThumbColor: Colors.white,
+                                inactiveTrackColor: Colors.black.withValues(
+                                  alpha: 0.12,
+                                ),
+                              );
+                            }),
                           ),
-                          value: notificationController.remindersEnabled.value,
-                          onChanged: notificationController.toggleReminders,
-                          activeThumbColor: Colors.white,
-                          activeTrackColor: AppColors.dashboardBrand.withValues(
-                            alpha: 0.55,
-                          ),
-                          inactiveThumbColor: Colors.white,
-                          inactiveTrackColor: Colors.black.withValues(
-                            alpha: 0.12,
-                          ),
-                        );
-                      }),
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.dark_mode_rounded,
-                          backgroundColor: const Color(0xFFF3E8FF),
-                          iconColor: const Color(0xFF7C3AED),
-                        ),
-                        titleKey: 'profile_dark_mode',
-                        trailing: Obx(() {
-                          return Switch(
-                            value: controller.darkModeEnabled.value,
-                            onChanged: controller.setDarkMode,
-                            activeThumbColor: Colors.white,
-                            activeTrackColor: AppColors.dashboardBrand,
-                            inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: Colors.black.withValues(
-                              alpha: 0.12,
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.notifications_rounded,
+                              backgroundColor: const Color(0xFFE8F3FF),
+                              iconColor: const Color(0xFF2563EB),
                             ),
-                          );
-                        }),
+                            titleKey: 'profile_notifications',
+                            trailing: Obx(() {
+                              return Switch(
+                                value: controller.notificationsEnabled.value,
+                                onChanged: controller.setNotifications,
+                                activeThumbColor: Colors.white,
+                                activeTrackColor: AppColors.dashboardBrand
+                                    .withValues(alpha: 0.55),
+                                inactiveThumbColor: Colors.white,
+                                inactiveTrackColor: Colors.black.withValues(
+                                  alpha: 0.12,
+                                ),
+                              );
+                            }),
+                          ),
+                        ],
                       ),
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.notifications_rounded,
-                          backgroundColor: const Color(0xFFE8F3FF),
-                          iconColor: const Color(0xFF2563EB),
-                        ),
-                        titleKey: 'profile_notifications',
-                        trailing: Obx(() {
-                          return Switch(
-                            value: controller.notificationsEnabled.value,
-                            onChanged: controller.setNotifications,
-                            activeThumbColor: Colors.white,
-                            activeTrackColor: AppColors.dashboardBrand
-                                .withValues(alpha: 0.55),
-                            inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: Colors.black.withValues(
-                              alpha: 0.12,
+                      const SizedBox(height: 18),
+                      const _SectionTitle('profile_section_support_legal'),
+                      const SizedBox(height: 10),
+                      _SettingsGroup(
+                        children: [
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.help_outline_rounded,
+                              backgroundColor: const Color(0xFFEFF4FF),
+                              iconColor: AppColors.authTextSecondary,
                             ),
-                          );
-                        }),
+                            titleKey: 'profile_help_support',
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              color: AppColors.authTextSecondary,
+                            ),
+                            onTap: controller.openHelpSupport,
+                          ),
+                          _SettingRow(
+                            leading: _CircleIcon(
+                              icon: Icons.verified_user_rounded,
+                              backgroundColor: const Color(0xFFEFF4FF),
+                              iconColor: AppColors.authTextSecondary,
+                            ),
+                            titleKey: 'profile_privacy_policy',
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              color: AppColors.authTextSecondary,
+                            ),
+                            onTap: controller.openPrivacyPolicy,
+                          ),
+                        ],
                       ),
+                      const SizedBox(height: 24),
+                      _LogoutButton(onTap: controller.logout),
                     ],
                   ),
-                  const SizedBox(height: 18),
-                  const _SectionTitle('profile_section_support_legal'),
-                  const SizedBox(height: 10),
-                  _SettingsGroup(
-                    children: [
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.help_outline_rounded,
-                          backgroundColor: const Color(0xFFEFF4FF),
-                          iconColor: AppColors.authTextSecondary,
-                        ),
-                        titleKey: 'profile_help_support',
-                        trailing: const Icon(
-                          Icons.chevron_right_rounded,
-                          color: AppColors.authTextSecondary,
-                        ),
-                        onTap: controller.openHelpSupport,
-                      ),
-                      _SettingRow(
-                        leading: _CircleIcon(
-                          icon: Icons.verified_user_rounded,
-                          backgroundColor: const Color(0xFFEFF4FF),
-                          iconColor: AppColors.authTextSecondary,
-                        ),
-                        titleKey: 'profile_privacy_policy',
-                        trailing: const Icon(
-                          Icons.chevron_right_rounded,
-                          color: AppColors.authTextSecondary,
-                        ),
-                        onTap: controller.openPrivacyPolicy,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _LogoutButton(onTap: controller.logout),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
