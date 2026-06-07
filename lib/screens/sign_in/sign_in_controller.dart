@@ -58,6 +58,10 @@ class SignInController extends BaseController {
         setLoading(true);
         setError(null);
         await auth.login(email: email, password: password);
+        // Check if login was successful
+        if (auth.firebaseUser.value == null) {
+          return;
+        }
         await user.fetchUserProfile();
         if (user.user.value == null) {
           Get.offAllNamed(AppRoutes.completeProfile);
@@ -72,10 +76,6 @@ class SignInController extends BaseController {
           } catch (_) {}
           Get.offAllNamed(AppRoutes.dashboard);
         }
-      } catch (e) {
-        final message = e is StateError ? e.message : 'common_failed'.tr;
-        setError(message);
-        Get.snackbar('common_failed'.tr, message);
       } finally {
         setLoading(false);
       }
@@ -100,11 +100,10 @@ class SignInController extends BaseController {
       setLoading(true);
       setError(null);
       await auth.signup(email: email, password: password);
+      if (auth.firebaseUser.value == null) {
+        return;
+      }
       Get.offAllNamed(AppRoutes.completeProfile, arguments: {'name': fullName});
-    } catch (e) {
-      final message = e is StateError ? e.message : 'common_failed'.tr;
-      setError(message);
-      Get.snackbar('common_failed'.tr, message);
     } finally {
       setLoading(false);
     }
@@ -117,6 +116,9 @@ class SignInController extends BaseController {
       setLoading(true);
       setError(null);
       await auth.googleSignIn();
+      if (auth.firebaseUser.value == null) {
+        return;
+      }
       await user.fetchUserProfile();
       if (user.user.value == null) {
         Get.offAllNamed(AppRoutes.completeProfile);
@@ -131,10 +133,6 @@ class SignInController extends BaseController {
         } catch (_) {}
         Get.offAllNamed(AppRoutes.dashboard);
       }
-    } catch (e) {
-      final message = e is StateError ? e.message : 'common_failed'.tr;
-      setError(message);
-      Get.snackbar('common_failed'.tr, message);
     } finally {
       setLoading(false);
     }

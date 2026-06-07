@@ -117,6 +117,7 @@ class _Card extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         child: Obx(() {
           final isLogin = controller.isLogin.value;
+          final error = controller.errorMessage.value;
 
           return Column(
             children: [
@@ -126,6 +127,29 @@ class _Card extends StatelessWidget {
                 onSignupTap: controller.setSignup,
               ),
               const SizedBox(height: 16),
+              if (error != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.error),
+                  ),
+                  child: Text(
+                    error,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
               if (!isLogin) ...[
                 AppTextField(
                   controller: controller.nameController,

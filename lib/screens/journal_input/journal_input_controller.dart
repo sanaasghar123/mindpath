@@ -82,6 +82,7 @@ class JournalInputController extends BaseController {
         activityType: 'journal',
         createdAt: null,
         title: _defaultTitleFromNow(),
+        prompt: prompt.value,
       );
 
       await _journalService.createJournal(entry);

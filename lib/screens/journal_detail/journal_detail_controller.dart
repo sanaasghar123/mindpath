@@ -88,6 +88,7 @@ class JournalDetailController extends BaseController {
         activityType: e.activityType,
         createdAt: e.createdAt,
         title: e.title,
+        prompt: e.prompt,
       );
 
       await _journalService.updateJournal(updated);

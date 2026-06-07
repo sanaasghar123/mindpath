@@ -1,14 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindpath/core/app_routes.dart';
 import 'package:mindpath/core/base_controller.dart';
 import 'package:mindpath/core/controllers/auth_controller.dart';
 import 'package:mindpath/core/controllers/user_controller.dart';
+import 'package:mindpath/core/services/storage_service.dart';
 
 class CompleteProfileController extends BaseController {
   final nameController = TextEditingController();
   final ageController = TextEditingController();
   final gender = RxnString();
+  final RxString selectedImagePath = ''.obs;
 
   @override
   void onInit() {
@@ -35,6 +38,18 @@ class CompleteProfileController extends BaseController {
     gender.value = value;
   }
 
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: source);
+      if (image != null) {
+        selectedImagePath.value = image.path;
+      }
+    } catch (e) {
+      Get.snackbar('common_failed'.tr, 'Failed to pick image');
+    }
+  }
+
   Future<void> submit() async {
     final name = nameController.text.trim();
     if (name.isEmpty) {
@@ -54,13 +69,28 @@ class CompleteProfileController extends BaseController {
       }
     }
 
+    String? profileImage;
+
     try {
       setLoading(true);
       setError(null);
+
+      if (selectedImagePath.value.isNotEmpty) {
+        final uid = Get.find<UserController>().userId;
+        if (uid != null) {
+          final XFile xFile = XFile(selectedImagePath.value);
+          profileImage = await Get.find<StorageService>().uploadUserProfileImage(
+            userId: uid,
+            image: xFile,
+          );
+        }
+      }
+
       await Get.find<UserController>().createUserProfile(
         name: name,
         age: parsedAge,
         gender: gender.value,
+        profileImage: profileImage,
       );
       await Get.find<AuthController>().scheduleDailyRemindersIfEnabled();
       Get.toNamed(AppRoutes.moodCheck);

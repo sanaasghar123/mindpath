@@ -27,10 +27,12 @@ class SpeechService {
         transcribedText.value = result.recognizedWords;
         onResult(result.recognizedWords);
       },
-      localeId: Get.locale?.languageCode == 'ur' ? 'ur_PK' : 'en_US',
-      listenFor: const Duration(seconds: 30),
-      pauseFor: const Duration(seconds: 3),
-      listenOptions: SpeechListenOptions(cancelOnError: true),
+      listenOptions: SpeechListenOptions(
+        cancelOnError: true,
+        localeId: Get.locale?.languageCode == 'ur' ? 'ur_PK' : 'en_US',
+        listenFor: const Duration(seconds: 30),
+        pauseFor: const Duration(seconds: 3),
+      ),
     );
   }
 

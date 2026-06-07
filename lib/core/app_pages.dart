@@ -8,6 +8,7 @@ import 'package:mindpath/screens/edit_profile/edit_profile_binding.dart';
 import 'package:mindpath/screens/edit_profile/edit_profile_view.dart';
 import 'package:mindpath/screens/activity_timer/activity_timer_binding.dart';
 import 'package:mindpath/screens/activity_timer/activity_timer_view.dart';
+import 'package:mindpath/screens/help_support/help_support_view.dart';
 import 'package:mindpath/screens/journal_entry_detail/journal_entry_detail_binding.dart';
 import 'package:mindpath/screens/journal_entry_detail/journal_entry_detail_view.dart';
 import 'package:mindpath/screens/journal_detail/journal_detail_binding.dart';
@@ -18,6 +19,7 @@ import 'package:mindpath/screens/mood_check/mood_check_controller.dart';
 import 'package:mindpath/screens/mood_check/mood_check_view.dart';
 import 'package:mindpath/screens/next/next_controller.dart';
 import 'package:mindpath/screens/next/next_view.dart';
+import 'package:mindpath/screens/privacy_policy/privacy_policy_view.dart';
 import 'package:mindpath/screens/sign_in/sign_in_controller.dart';
 import 'package:mindpath/screens/sign_in/sign_in_view.dart';
 import 'package:mindpath/screens/splash/splash_controller.dart';
@@ -87,6 +89,14 @@ class AppPages {
       binding: BindingsBuilder(() {
         Get.put(NextController());
       }),
+    ),
+    GetPage(
+      name: AppRoutes.helpSupport,
+      page: () => const HelpSupportView(),
+    ),
+    GetPage(
+      name: AppRoutes.privacyPolicy,
+      page: () => const PrivacyPolicyView(),
     ),
   ];
 }

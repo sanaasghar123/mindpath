@@ -1,19 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/app_routes.dart';
 import 'package:mindpath/core/base_controller.dart';
 import 'package:mindpath/core/controllers/auth_controller.dart';
 import 'package:mindpath/core/controllers/user_controller.dart';
+import 'package:mindpath/features/profile/controllers/theme_controller.dart';
 import 'package:mindpath/screens/dashboard/dashboard_controller.dart';
 
 enum AppLanguage { english, urdu }
 
 class ProfileController extends BaseController {
   final language = AppLanguage.english.obs;
-  final darkModeEnabled = false.obs;
   final notificationsEnabled = true.obs;
 
   DashboardController get _dashboard => Get.find<DashboardController>();
   UserController get _userController => Get.find<UserController>();
+  ThemeController get _themeController => Get.find<ThemeController>();
 
   String get userName => _userController.user.value?.name ?? 'profile_default_user'.tr;
 
@@ -32,7 +34,7 @@ class ProfileController extends BaseController {
   }
 
   void setDarkMode(bool value) {
-    darkModeEnabled.value = value;
+    _themeController.setThemeMode(value ? ThemeMode.dark : ThemeMode.light);
   }
 
   void setNotifications(bool value) {
@@ -40,17 +42,11 @@ class ProfileController extends BaseController {
   }
 
   void openHelpSupport() {
-    Get.snackbar(
-      'profile_help_support'.tr,
-      'profile_help_support_coming_soon'.tr,
-    );
+    Get.toNamed(AppRoutes.helpSupport);
   }
 
   void openPrivacyPolicy() {
-    Get.snackbar(
-      'profile_privacy_policy'.tr,
-      'profile_privacy_policy_coming_soon'.tr,
-    );
+    Get.toNamed(AppRoutes.privacyPolicy);
   }
 
   void logout() {

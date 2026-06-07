@@ -10,4 +10,6 @@ class AppRoutes {
   static const journalDetail = '/journal-detail';
   static const activityTimer = '/activity-timer';
   static const next = '/next';
+  static const helpSupport = '/help-support';
+  static const privacyPolicy = '/privacy-policy';
 }

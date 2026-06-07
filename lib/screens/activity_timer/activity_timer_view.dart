@@ -39,6 +39,13 @@ class ActivityTimerView extends GetView<ActivityTimerController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Obx(() {
+                      if (controller.activityType.value == 'walk') {
+                        return const _WalkTips();
+                      } else {
+                        return const _BreathingSteps();
+                      }
+                    }),
                     Expanded(
                       child: Center(
                         child: Obx(() {
@@ -92,6 +99,214 @@ class ActivityTimerView extends GetView<ActivityTimerController> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _WalkTips extends StatelessWidget {
+  const _WalkTips();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 22,
+            offset: const Offset(0, 14),
+            color: Colors.black.withValues(alpha: 0.06),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Mindful Walk Tips',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+                color: AppColors.authTextPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _WalkTip(
+                  icon: Icons.air_rounded,
+                  label: 'Breathe',
+                ),
+                _WalkTip(
+                  icon: Icons.visibility_rounded,
+                  label: 'Observe',
+                ),
+                _WalkTip(
+                  icon: Icons.waves_rounded,
+                  label: 'Feel',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WalkTip extends StatelessWidget {
+  const _WalkTip({
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.dashboardBrand.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              icon,
+              color: AppColors.dashboardBrand,
+              size: 26,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: AppColors.authTextPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BreathingSteps extends StatelessWidget {
+  const _BreathingSteps();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 22,
+            offset: const Offset(0, 14),
+            color: Colors.black.withValues(alpha: 0.06),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'How to Breathe',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
+                color: AppColors.authTextPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _BreathingStep(
+                  icon: Icons.arrow_downward_rounded,
+                  label: 'Inhale',
+                  duration: '4s',
+                ),
+                _BreathingStep(
+                  icon: Icons.pause_rounded,
+                  label: 'Hold',
+                  duration: '7s',
+                ),
+                _BreathingStep(
+                  icon: Icons.arrow_upward_rounded,
+                  label: 'Exhale',
+                  duration: '8s',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BreathingStep extends StatelessWidget {
+  const _BreathingStep({
+    required this.icon,
+    required this.label,
+    required this.duration,
+  });
+
+  final IconData icon;
+  final String label;
+  final String duration;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              icon,
+              color: AppColors.primary,
+              size: 26,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: AppColors.authTextPrimary,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          duration,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: AppColors.authTextSecondary,
+          ),
+        ),
+      ],
     );
   }
 }

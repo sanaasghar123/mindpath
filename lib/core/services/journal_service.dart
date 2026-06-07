@@ -31,42 +31,63 @@ class JournalService {
     required String userId,
     int limit = 10,
   }) async {
-    final snapshot = await _journals
-        .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .limit(limit)
-        .get();
-    return snapshot.docs.map(JournalEntry.fromDoc).toList();
+    try {
+      final snapshot = await _journals
+          .where('userId', isEqualTo: userId)
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .get();
+      return snapshot.docs.map(JournalEntry.fromDoc).toList();
+    } catch (e) {
+      throw StateError('Failed to load journals');
+    }
   }
 
   Future<JournalEntry> createJournal(JournalEntry entry) async {
-    final doc = _journals.doc();
-    final withId = JournalEntry(
-      id: doc.id,
-      userId: entry.userId,
-      text: entry.text,
-      sentiment: entry.sentiment,
-      emotion: entry.emotion,
-      insight: entry.insight,
-      tags: entry.tags,
-      activityType: entry.activityType,
-      createdAt: entry.createdAt,
-      title: entry.title,
-    );
-    await doc.set(withId.toMapForCreate());
-    return withId;
+    try {
+      final doc = _journals.doc();
+      final withId = JournalEntry(
+        id: doc.id,
+        userId: entry.userId,
+        text: entry.text,
+        sentiment: entry.sentiment,
+        emotion: entry.emotion,
+        insight: entry.insight,
+        tags: entry.tags,
+        activityType: entry.activityType,
+        createdAt: entry.createdAt,
+        title: entry.title,
+        prompt: entry.prompt,
+      );
+      await doc.set(withId.toMapForCreate());
+      return withId;
+    } catch (e) {
+      throw StateError('Failed to save journal');
+    }
   }
 
   Future<void> updateJournal(JournalEntry entry) async {
-    await _journals.doc(entry.id).update(entry.toMapForUpdate());
+    try {
+      await _journals.doc(entry.id).update(entry.toMapForUpdate());
+    } catch (e) {
+      throw StateError('Failed to update journal');
+    }
   }
 
   Future<void> deleteJournal({required String journalId}) async {
-    await _journals.doc(journalId).delete();
+    try {
+      await _journals.doc(journalId).delete();
+    } catch (e) {
+      throw StateError('Failed to delete journal');
+    }
   }
 
   Future<void> logActivity(ActivityLog log) async {
-    await _activityLogs.add(log.toMapForCreate());
+    try {
+      await _activityLogs.add(log.toMapForCreate());
+    } catch (e) {
+      throw StateError('Failed to log activity');
+    }
   }
 }
 

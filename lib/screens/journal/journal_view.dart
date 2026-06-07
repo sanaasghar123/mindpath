@@ -161,11 +161,11 @@ class _ActivityCard extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: iconBg,
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(18),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Icon(activity.icon, size: 22, color: iconFg),
+                  padding: const EdgeInsets.all(16),
+                  child: Icon(activity.icon, size: 44, color: iconFg),
                 ),
               ),
             ),
@@ -188,6 +188,26 @@ class _ActivityCard extends StatelessWidget {
                 color: AppColors.authTextSecondary,
               ),
             ),
+            if (activity.durationSeconds != null) ...[
+              const SizedBox(height: 8),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  child: Text(
+                    '${activity.durationSeconds! ~/ 60} min',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.authTextSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 14),
             Align(
               alignment: Alignment.center,

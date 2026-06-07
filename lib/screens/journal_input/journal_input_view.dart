@@ -80,60 +80,6 @@ class JournalInputView extends GetView<JournalInputController> {
                             hintText: 'journal_write_hint'.tr,
                             filled: true,
                             fillColor: Colors.white,
-                            suffixIcon: Obx(() {
-                              if (!speech.isAvailable.value) {
-                                return const SizedBox.shrink();
-                              }
-                              return IconButton(
-                                tooltip: 'tap_mic_to_speak'.tr,
-                                icon: Icon(
-                                  speech.isListening.value
-                                      ? Icons.mic_rounded
-                                      : Icons.mic_none_rounded,
-                                  color: speech.isListening.value
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.grey,
-                                ),
-                                onPressed: () async {
-                                  if (!speech.isAvailable.value) {
-                                    Get.snackbar(
-                                      'voice_input'.tr,
-                                      'voice_not_available'.tr,
-                                    );
-                                    return;
-                                  }
-                                  if (speech.isListening.value) {
-                                    await speech.stopListening();
-                                    return;
-                                  }
-                                  final base = controller.textController.text
-                                      .trim();
-                                  try {
-                                    await speech.startListening(
-                                      onResult: (text) {
-                                        final spoken = text.trim();
-                                        final appended = base.isEmpty
-                                            ? spoken
-                                            : (spoken.isEmpty
-                                                  ? base
-                                                  : '$base $spoken');
-                                        controller.textController.text =
-                                            appended;
-                                        controller.textController.selection =
-                                            TextSelection.collapsed(
-                                              offset: appended.length,
-                                            );
-                                      },
-                                    );
-                                  } catch (_) {
-                                    Get.snackbar(
-                                      'voice_input'.tr,
-                                      'voice_not_available'.tr,
-                                    );
-                                  }
-                                },
-                              );
-                            }),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                               borderSide: BorderSide(
@@ -173,6 +119,85 @@ class JournalInputView extends GetView<JournalInputController> {
                               ),
                             ),
                           ],
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 14),
+                    Obx(() {
+                      if (!speech.isAvailable.value) {
+                        return const SizedBox.shrink();
+                      }
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (!speech.isAvailable.value) {
+                              Get.snackbar(
+                                'voice_input'.tr,
+                                'voice_not_available'.tr,
+                              );
+                              return;
+                            }
+                            if (speech.isListening.value) {
+                              await speech.stopListening();
+                              return;
+                            }
+                            final base = controller.textController.text.trim();
+                            try {
+                              await speech.startListening(
+                                onResult: (text) {
+                                  final spoken = text.trim();
+                                  final appended = base.isEmpty
+                                      ? spoken
+                                      : (spoken.isEmpty
+                                            ? base
+                                            : '$base $spoken');
+                                  controller.textController.text = appended;
+                                  controller.textController.selection =
+                                      TextSelection.collapsed(
+                                        offset: appended.length,
+                                      );
+                                },
+                              );
+                            } catch (_) {
+                              Get.snackbar(
+                                'voice_input'.tr,
+                                'voice_not_available'.tr,
+                              );
+                            }
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.75),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(
+                                color: Colors.black.withValues(alpha: 0.06),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              child: Obx(() {
+                                final fg = speech.isListening.value
+                                    ? Theme.of(context).colorScheme.primary
+                                    : AppColors.authTextSecondary;
+                                return Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.mic_none_rounded,
+                                        size: 18, color: fg),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'mood_voice_to_text'.tr,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700, color: fg),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
                         ),
                       );
                     }),

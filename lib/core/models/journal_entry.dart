@@ -12,6 +12,7 @@ class JournalEntry {
     required this.activityType,
     required this.createdAt,
     required this.title,
+    this.prompt,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class JournalEntry {
   final String activityType;
   final Timestamp? createdAt;
   final String title;
+  final String? prompt;
 
   Map<String, dynamic> toMapForCreate() {
     return {
@@ -37,6 +39,7 @@ class JournalEntry {
       'activityType': activityType,
       'createdAt': FieldValue.serverTimestamp(),
       'title': title,
+      'prompt': prompt,
     };
   }
 
@@ -48,6 +51,7 @@ class JournalEntry {
       'insight': insight,
       'tags': tags,
       'title': title,
+      'prompt': prompt,
     };
   }
 
@@ -68,6 +72,7 @@ class JournalEntry {
       activityType: (data['activityType'] ?? '') as String,
       createdAt: data['createdAt'] as Timestamp?,
       title: (data['title'] ?? '') as String,
+      prompt: data['prompt'] as String?,
     );
   }
 }

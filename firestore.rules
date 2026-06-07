@@ -3,33 +3,44 @@
 // Ownership is determined by matching request.auth.uid to:
 //   - the document ID in /users/{userId}
 //   - the userId field in mood_records, journals, activity_logs
+// Admins can access all documents.
 // All access requires authentication (request.auth != null).
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+  
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
 
-    // users — only the owner can read or write their own profile
+    // admins — only the admin can read their own document
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // users — only the owner or admin can read or write
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isAdmin() || (request.auth != null && request.auth.uid == userId);
     }
 
-    // mood_records — authenticated user can create records and read only their own
+    // mood_records — owner or admin can access
     match /mood_records/{recordId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if isAdmin() || (request.auth != null && request.resource.data.userId == request.auth.uid);
+      allow read, update, delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
     }
 
-    // journals — full CRUD but only own documents
+    // journals — owner or admin can access
     match /journals/{journalId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if isAdmin() || (request.auth != null && request.resource.data.userId == request.auth.uid);
+      allow read, update, delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
     }
 
-    // activity_logs — create and read own records only
+    // activity_logs — owner or admin can access
     match /activity_logs/{logId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if isAdmin() || (request.auth != null && request.resource.data.userId == request.auth.uid);
+      allow read, update, delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
     }
   }
 }

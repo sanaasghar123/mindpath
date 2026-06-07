@@ -78,7 +78,6 @@ class AuthController extends BaseController {
       final message = _friendlyAuthMessage(e);
       setError(message);
       Get.snackbar('auth_login_failed'.tr, message);
-      rethrow;
     } finally {
       setLoading(false);
     }
@@ -93,7 +92,6 @@ class AuthController extends BaseController {
       final message = _friendlyAuthMessage(e);
       setError(message);
       Get.snackbar('auth_signup_failed'.tr, message);
-      rethrow;
     } finally {
       setLoading(false);
     }
@@ -108,11 +106,9 @@ class AuthController extends BaseController {
       final message = _friendlyAuthMessage(e);
       setError(message);
       Get.snackbar('auth_google_failed'.tr, message);
-      rethrow;
     } catch (e) {
       setError('auth_google_try_again'.tr);
       Get.snackbar('auth_google_failed'.tr, 'auth_google_try_again'.tr);
-      rethrow;
     } finally {
       setLoading(false);
     }

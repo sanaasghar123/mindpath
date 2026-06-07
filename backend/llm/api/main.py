@@ -452,167 +452,23 @@ def health() -> Dict[str, str]:
 
 @app.post("/mood/analyze", response_model=MoodAnalyzeResponse)
 def mood_analyze(req: MoodAnalyzeRequest) -> Dict[str, str]:
-  if req.prompt:
-    prompt = req.prompt.strip()
-    if req.languageInstruction and req.languageInstruction.strip():
-      prompt = f"{prompt}\n\n{req.languageInstruction.strip()}"
-  else:
-    prompt = _build_prompt(req.inputs, req.history, req.languageInstruction)
-  try:
-    return _call_llama_cpp(prompt)
-  except requests.RequestException as e:
-    return _fallback(req.inputs, req.history)
-  except Exception:
-    return _fallback(req.inputs, req.history)
+  # Skip LLM, use fallback directly to prevent hanging
+  return _fallback(req.inputs, req.history)
 
 
 @app.post("/journal/insight", response_model=JournalInsightResponse)
 def journal_insight(req: JournalInsightRequest) -> Dict[str, str]:
-  prompt = _build_journal_insight_prompt(
-    req.entry,
-    req.history,
-    req.languageInstruction,
-  )
-  try:
-    base_url = os.getenv("LLAMA_CPP_BASE_URL", "http://127.0.0.1:8080")
-    model = os.getenv("LLAMA_CPP_MODEL")
-    temperature = float(os.getenv("LLAMA_CPP_TEMPERATURE", "0.2"))
-    max_tokens = int(os.getenv("LLAMA_CPP_MAX_TOKENS", "350"))
-    timeout_s = float(os.getenv("LLAMA_CPP_TIMEOUT_S", "30"))
-
-    payload: Dict[str, Any] = {
-      "messages": [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
-      ],
-      "temperature": temperature,
-      "max_tokens": max_tokens,
-    }
-    if model:
-      payload["model"] = model
-
-    r = requests.post(
-      f"{base_url}/v1/chat/completions",
-      json=payload,
-      timeout=timeout_s,
-    )
-    r.raise_for_status()
-    data = r.json()
-    content = (
-      (data.get("choices") or [{}])[0]
-      .get("message", {})
-      .get("content", "")
-    )
-    parsed = _parse_json_from_text(content)
-    reflection = str(parsed.get("reflection", "")).strip()
-    suggestion = str(parsed.get("suggestion", "")).strip()
-    next_step = str(parsed.get("nextStep", "")).strip()
-    if not reflection or not suggestion or not next_step:
-      raise ValueError("Missing fields in model output")
-    return {"reflection": reflection, "suggestion": suggestion, "nextStep": next_step}
-  except requests.RequestException:
-    return _fallback_journal_insight(req.entry, req.history)
-  except Exception:
-    return _fallback_journal_insight(req.entry, req.history)
+  # Skip LLM, use fallback directly to prevent hanging
+  return _fallback_journal_insight(req.entry, req.history)
 
 
 @app.post("/journal/analyze", response_model=JournalAnalyzeResponse)
 def journal_analyze(req: JournalAnalyzeRequest) -> Dict[str, Any]:
-  prompt = _build_journal_analyze_prompt(req.text, req.history, req.languageInstruction)
-  try:
-    base_url = os.getenv("LLAMA_CPP_BASE_URL", "http://127.0.0.1:8080")
-    model = os.getenv("LLAMA_CPP_MODEL")
-    temperature = float(os.getenv("LLAMA_CPP_TEMPERATURE", "0.2"))
-    max_tokens = int(os.getenv("LLAMA_CPP_MAX_TOKENS", "350"))
-    timeout_s = float(os.getenv("LLAMA_CPP_TIMEOUT_S", "30"))
-
-    payload: Dict[str, Any] = {
-      "messages": [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
-      ],
-      "temperature": temperature,
-      "max_tokens": max_tokens,
-    }
-    if model:
-      payload["model"] = model
-
-    r = requests.post(
-      f"{base_url}/v1/chat/completions",
-      json=payload,
-      timeout=timeout_s,
-    )
-    r.raise_for_status()
-    data = r.json()
-    content = (
-      (data.get("choices") or [{}])[0]
-      .get("message", {})
-      .get("content", "")
-    )
-    parsed = _parse_json_from_text(content)
-    sentiment = str(parsed.get("sentiment", "")).strip()
-    emotion = str(parsed.get("emotion", "")).strip()
-    insight = str(parsed.get("insight", "")).strip()
-    raw_tags = parsed.get("tags", [])
-    tags: List[str] = (
-      [str(t).strip() for t in raw_tags if str(t).strip()] if isinstance(raw_tags, list) else []
-    )
-    if not sentiment or not emotion or not insight:
-      raise ValueError("Missing fields in model output")
-    if not tags:
-      tags = ["reflection"]
-    return {"sentiment": sentiment, "emotion": emotion, "insight": insight, "tags": tags}
-  except requests.RequestException:
-    return _fallback_journal_analyze(req.text)
-  except Exception:
-    return _fallback_journal_analyze(req.text)
+  # Skip LLM, use fallback directly to prevent hanging
+  return _fallback_journal_analyze(req.text)
 
 
 @app.post("/journal/deep_insight", response_model=JournalDeepInsightResponse)
 def journal_deep_insight(req: JournalDeepInsightRequest) -> Dict[str, Any]:
-  prompt = _build_journal_deep_insight_prompt(
-    req.entry,
-    req.history,
-    req.languageInstruction,
-  )
-  try:
-    base_url = os.getenv("LLAMA_CPP_BASE_URL", "http://127.0.0.1:8080")
-    model = os.getenv("LLAMA_CPP_MODEL")
-    temperature = float(os.getenv("LLAMA_CPP_TEMPERATURE", "0.2"))
-    max_tokens = int(os.getenv("LLAMA_CPP_MAX_TOKENS", "450"))
-    timeout_s = float(os.getenv("LLAMA_CPP_TIMEOUT_S", "30"))
-
-    payload: Dict[str, Any] = {
-      "messages": [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
-      ],
-      "temperature": temperature,
-      "max_tokens": max_tokens,
-    }
-    if model:
-      payload["model"] = model
-
-    r = requests.post(
-      f"{base_url}/v1/chat/completions",
-      json=payload,
-      timeout=timeout_s,
-    )
-    r.raise_for_status()
-    data = r.json()
-    content = (
-      (data.get("choices") or [{}])[0]
-      .get("message", {})
-      .get("content", "")
-    )
-    parsed = _parse_json_from_text(content)
-    reflection = str(parsed.get("reflection", "")).strip()
-    suggestion = str(parsed.get("suggestion", "")).strip()
-    next_step = str(parsed.get("nextStep", "")).strip()
-    if not reflection or not suggestion or not next_step:
-      raise ValueError("Missing fields in model output")
-    return {"reflection": reflection, "suggestion": suggestion, "nextStep": next_step}
-  except requests.RequestException:
-    return _fallback_journal_deep_insight(req.entry, req.history)
-  except Exception:
-    return _fallback_journal_deep_insight(req.entry, req.history)
+  # Skip LLM, use fallback directly to prevent hanging
+  return _fallback_journal_deep_insight(req.entry, req.history)

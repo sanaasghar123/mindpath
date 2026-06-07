@@ -283,39 +283,6 @@ class _JournalCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Obx(() {
-                  if (!speech.isAvailable.value) return const SizedBox.shrink();
-                  return _VoiceChip(
-                    isActive: speech.isListening.value,
-                    onTap: () async {
-                      if (!speech.isAvailable.value) {
-                        Get.snackbar(
-                          'voice_input'.tr,
-                          'voice_not_available'.tr,
-                        );
-                        return;
-                      }
-                      if (speech.isListening.value) {
-                        await speech.stopListening();
-                        return;
-                      }
-                      try {
-                        await speech.startListening(
-                          onResult: (text) {
-                            controller.journalController.text = text;
-                            controller.journalController.selection =
-                                TextSelection.collapsed(offset: text.length);
-                          },
-                        );
-                      } catch (_) {
-                        Get.snackbar(
-                          'voice_input'.tr,
-                          'voice_not_available'.tr,
-                        );
-                      }
-                    },
-                  );
-                }),
               ],
             ),
             const SizedBox(height: 12),
@@ -419,6 +386,43 @@ class _JournalCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 14),
+            Obx(() {
+              if (!speech.isAvailable.value) return const SizedBox.shrink();
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: _VoiceChip(
+                  isActive: speech.isListening.value,
+                  onTap: () async {
+                    if (!speech.isAvailable.value) {
+                      Get.snackbar(
+                        'voice_input'.tr,
+                        'voice_not_available'.tr,
+                      );
+                      return;
+                    }
+                    if (speech.isListening.value) {
+                      await speech.stopListening();
+                      return;
+                    }
+                    try {
+                      await speech.startListening(
+                        onResult: (text) {
+                          controller.journalController.text = text;
+                          controller.journalController.selection =
+                              TextSelection.collapsed(offset: text.length);
+                        },
+                      );
+                    } catch (_) {
+                      Get.snackbar(
+                        'voice_input'.tr,
+                        'voice_not_available'.tr,
+                      );
+                    }
+                  },
+                ),
+              );
+            }),
             const SizedBox(height: 14),
             Obx(() {
               final loading = controller.isLoading.value;

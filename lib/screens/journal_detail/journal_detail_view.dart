@@ -111,6 +111,30 @@ class JournalDetailView extends GetView<JournalDetailController> {
                                 ],
                               ),
                               const SizedBox(height: 10),
+                              if (entry.prompt != null && entry.prompt!.isNotEmpty)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'journal_prompt'.tr,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w900,
+                                        color: AppColors.authTextSecondary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      entry.prompt!,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.authTextPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                ),
                               if (entry.tags.isNotEmpty)
                                 Wrap(
                                   spacing: 8,

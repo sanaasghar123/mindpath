@@ -1,13 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindpath/core/base_controller.dart';
 import 'package:mindpath/core/controllers/user_controller.dart';
+import 'package:mindpath/core/services/storage_service.dart';
 
 class EditProfileController extends BaseController {
   final nameController = TextEditingController();
   final ageController = TextEditingController();
   final genderController = TextEditingController();
   final profileImageController = TextEditingController();
+  final RxString selectedImagePath = ''.obs;
 
   @override
   void onInit() {
@@ -17,7 +20,20 @@ class EditProfileController extends BaseController {
       nameController.text = existing.name;
       if (existing.age != null) ageController.text = '${existing.age}';
       if (existing.gender != null) genderController.text = existing.gender!;
-      if (existing.profileImage != null) profileImageController.text = existing.profileImage!;
+      if (existing.profileImage != null)
+        profileImageController.text = existing.profileImage!;
+    }
+  }
+
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: source);
+      if (image != null) {
+        selectedImagePath.value = image.path;
+      }
+    } catch (e) {
+      Get.snackbar('common_failed'.tr, 'Failed to pick image');
     }
   }
 
@@ -41,19 +57,32 @@ class EditProfileController extends BaseController {
     }
 
     final gender = genderController.text.trim();
-    final profileImage = profileImageController.text.trim();
+    String? profileImage;
 
     try {
       setLoading(true);
       setError(null);
+
+      if (selectedImagePath.value.isNotEmpty) {
+        final uid = Get.find<UserController>().userId;
+        if (uid != null) {
+          final XFile xFile = XFile(selectedImagePath.value);
+          profileImage = await Get.find<StorageService>()
+              .uploadUserProfileImage(userId: uid, image: xFile);
+        }
+      } else if (profileImageController.text.trim().isNotEmpty) {
+        profileImage = profileImageController.text.trim();
+      }
+
       await Get.find<UserController>().updateUserProfile(
         name: name,
         age: parsedAge,
         gender: gender.isEmpty ? null : gender,
-        profileImage: profileImage.isEmpty ? null : profileImage,
+        profileImage: profileImage,
       );
       Get.back();
-    } catch (_) {} finally {
+    } catch (_) {
+    } finally {
       setLoading(false);
     }
   }

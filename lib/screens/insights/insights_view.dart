@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/app_routes.dart';
 import 'package:mindpath/core/models/mood_record.dart';
-import 'package:mindpath/screens/dashboard/dashboard_controller.dart';
 import 'package:mindpath/screens/insights/insights_controller.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:mindpath/widgets/custom_button.dart';
 
 class InsightsView extends GetView<InsightsController> {
   const InsightsView({super.key});
-
-  void _openDrawer() {
-    final dashboardController = Get.find<DashboardController>();
-    dashboardController.openDrawer();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +23,9 @@ class InsightsView extends GetView<InsightsController> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  floating: true,
-                  backgroundColor: Colors.transparent,
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.menu_rounded,
-                      color: AppColors.authTextPrimary,
-                    ),
-                    onPressed: _openDrawer,
-                  ),
-                  title: Text(
-                    'app_name'.tr,
-                    style: const TextStyle(color: AppColors.authTextPrimary),
-                  ),
-                  centerTitle: true,
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
-                  sliver: SliverList.list(
-                    children: [
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
+              children: [
                       Text(
                         controller.title,
                         style: const TextStyle(
@@ -110,9 +84,6 @@ class InsightsView extends GetView<InsightsController> {
                       const SizedBox(height: 6),
                       _WeeklyMilestoneCard(controller: controller),
                     ],
-                  ),
-                ),
-              ],
             ),
           ),
         ),

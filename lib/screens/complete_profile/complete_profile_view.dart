@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mindpath/screens/complete_profile/complete_profile_controller.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:mindpath/widgets/app_text_field.dart';
@@ -72,6 +75,103 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
+                            Obx(() {
+                              final selectedPath =
+                                  controller.selectedImagePath.value;
+                              Widget imageWidget;
+
+                              if (selectedPath.isNotEmpty) {
+                                imageWidget = ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.file(
+                                    File(selectedPath),
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              } else {
+                                imageWidget = ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 50,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Column(
+                                children: [
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.bottomSheet(
+                                          Container(
+                                            padding: const EdgeInsets.all(16),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ListTile(
+                                                  leading: const Icon(
+                                                    Icons.camera_alt,
+                                                  ),
+                                                  title: Text('Take Photo'.tr),
+                                                  onTap: () {
+                                                    Get.back();
+                                                    controller.pickImage(
+                                                      ImageSource.camera,
+                                                    );
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  leading: const Icon(
+                                                    Icons.photo_library,
+                                                  ),
+                                                  title: Text(
+                                                    'Choose from Gallery'.tr,
+                                                  ),
+                                                  onTap: () {
+                                                    Get.back();
+                                                    controller.pickImage(
+                                                      ImageSource.gallery,
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          isScrollControlled: true,
+                                        );
+                                      },
+                                      child: imageWidget,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Tap to add profile picture'.tr,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.authTextSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
+                              );
+                            }),
                             AppTextField(
                               controller: controller.nameController,
                               hintText: 'auth_full_name'.tr,

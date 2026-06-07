@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/controllers/notification_controller.dart';
 import 'package:mindpath/features/profile/controllers/language_controller.dart';
-import 'package:mindpath/screens/dashboard/dashboard_controller.dart';
+import 'package:mindpath/features/profile/controllers/theme_controller.dart';
 import 'package:mindpath/screens/profile/profile_controller.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:mindpath/widgets/custom_button.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
-
-  void _openDrawer() {
-    final dashboardController = Get.find<DashboardController>();
-    dashboardController.openDrawer();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +24,9 @@ class ProfileView extends GetView<ProfileController> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  floating: true,
-                  backgroundColor: Colors.transparent,
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.menu_rounded,
-                      color: AppColors.authTextPrimary,
-                    ),
-                    onPressed: _openDrawer,
-                  ),
-                  title: Text(
-                    'app_name'.tr,
-                    style: const TextStyle(color: AppColors.authTextPrimary),
-                  ),
-                  centerTitle: true,
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
-                  sliver: SliverList.list(
-                    children: [
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
+              children: [
                       _ProfileHeader(controller: controller),
                       const SizedBox(height: 22),
                       const _SectionTitle('profile_section_general'),
@@ -130,9 +105,22 @@ class ProfileView extends GetView<ProfileController> {
                             ),
                             titleKey: 'profile_dark_mode',
                             trailing: Obx(() {
+                              final themeController =
+                                  Get.find<ThemeController>();
+                              final isDark =
+                                  themeController.themeMode.value ==
+                                      ThemeMode.dark ||
+                                  (themeController.themeMode.value ==
+                                          ThemeMode.system &&
+                                      WidgetsBinding
+                                              .instance
+                                              .platformDispatcher
+                                              .platformBrightness ==
+                                          Brightness.dark);
                               return Switch(
-                                value: controller.darkModeEnabled.value,
-                                onChanged: controller.setDarkMode,
+                                value: isDark,
+                                onChanged: (value) =>
+                                    controller.setDarkMode(value),
                                 activeThumbColor: Colors.white,
                                 activeTrackColor: AppColors.dashboardBrand,
                                 inactiveThumbColor: Colors.white,
@@ -201,9 +189,6 @@ class ProfileView extends GetView<ProfileController> {
                       const SizedBox(height: 24),
                       _LogoutButton(onTap: controller.logout),
                     ],
-                  ),
-                ),
-              ],
             ),
           ),
         ),
