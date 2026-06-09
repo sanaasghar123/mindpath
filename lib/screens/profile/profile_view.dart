@@ -25,7 +25,7 @@ class ProfileView extends GetView<ProfileController> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(18, 10, 18, 18),
+              padding: const EdgeInsetsDirectional.fromSTEB(18, 10, 18, 18),
               children: [
                       _ProfileHeader(controller: controller),
                       const SizedBox(height: 22),
@@ -40,8 +40,10 @@ class ProfileView extends GetView<ProfileController> {
                               iconColor: AppColors.dashboardBrand,
                             ),
                             titleKey: 'profile_edit_profile',
-                            trailing: const Icon(
-                              Icons.chevron_right_rounded,
+                            trailing: Icon(
+                              Directionality.of(context) == TextDirection.rtl
+                                  ? Icons.chevron_left_rounded
+                                  : Icons.chevron_right_rounded,
                               color: AppColors.authTextSecondary,
                             ),
                             onTap: controller.openEditProfile,
@@ -59,7 +61,7 @@ class ProfileView extends GetView<ProfileController> {
                             final notificationController =
                                 Get.find<NotificationController>();
                             return SwitchListTile(
-                              contentPadding: const EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsetsDirectional.symmetric(
                                 horizontal: 14,
                               ),
                               secondary: const _CircleIcon(
@@ -165,8 +167,10 @@ class ProfileView extends GetView<ProfileController> {
                               iconColor: AppColors.authTextSecondary,
                             ),
                             titleKey: 'profile_help_support',
-                            trailing: const Icon(
-                              Icons.chevron_right_rounded,
+                            trailing: Icon(
+                              Directionality.of(context) == TextDirection.rtl
+                                  ? Icons.chevron_left_rounded
+                                  : Icons.chevron_right_rounded,
                               color: AppColors.authTextSecondary,
                             ),
                             onTap: controller.openHelpSupport,
@@ -178,8 +182,10 @@ class ProfileView extends GetView<ProfileController> {
                               iconColor: AppColors.authTextSecondary,
                             ),
                             titleKey: 'profile_privacy_policy',
-                            trailing: const Icon(
-                              Icons.chevron_right_rounded,
+                            trailing: Icon(
+                              Directionality.of(context) == TextDirection.rtl
+                                  ? Icons.chevron_left_rounded
+                                  : Icons.chevron_right_rounded,
                               color: AppColors.authTextSecondary,
                             ),
                             onTap: controller.openPrivacyPolicy,
@@ -344,7 +350,7 @@ class _SettingRow extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(22),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 14, vertical: 14),
         child: Row(
           children: [
             leading,
@@ -450,7 +456,7 @@ class _LangChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOut,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(999),

@@ -127,7 +127,7 @@ class _WalkTips extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Mindful Walk Tips',
+              'activity_walk_tips'.tr,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w900,
@@ -140,15 +140,15 @@ class _WalkTips extends StatelessWidget {
               children: [
                 _WalkTip(
                   icon: Icons.air_rounded,
-                  label: 'Breathe',
+                  label: 'activity_breathe'.tr,
                 ),
                 _WalkTip(
                   icon: Icons.visibility_rounded,
-                  label: 'Observe',
+                  label: 'activity_observe'.tr,
                 ),
                 _WalkTip(
                   icon: Icons.waves_rounded,
-                  label: 'Feel',
+                  label: 'activity_feel'.tr,
                 ),
               ],
             ),
@@ -224,7 +224,7 @@ class _BreathingSteps extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'How to Breathe',
+              'activity_how_to_breathe'.tr,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w900,
@@ -237,17 +237,17 @@ class _BreathingSteps extends StatelessWidget {
               children: [
                 _BreathingStep(
                   icon: Icons.arrow_downward_rounded,
-                  label: 'Inhale',
+                  label: 'activity_inhale'.tr,
                   duration: '4s',
                 ),
                 _BreathingStep(
                   icon: Icons.pause_rounded,
-                  label: 'Hold',
+                  label: 'activity_hold'.tr,
                   duration: '7s',
                 ),
                 _BreathingStep(
                   icon: Icons.arrow_upward_rounded,
-                  label: 'Exhale',
+                  label: 'activity_exhale'.tr,
                   duration: '8s',
                 ),
               ],
@@ -385,7 +385,7 @@ class _PulseTimerRingState extends State<_PulseTimerRing>
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Breathe slowly',
+                    'activity_breathe_slowly'.tr,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,

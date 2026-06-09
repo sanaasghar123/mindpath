@@ -153,8 +153,8 @@ class InsightsController extends BaseController {
         .toList(growable: false);
 
     final periodLabel = insightsPeriod.value == InsightsPeriod.weekly
-        ? 'Weekly'
-        : 'Monthly';
+        ? 'insights_weekly'.tr
+        : 'insights_monthly'.tr;
     final scorePct = (averageScore.value * 100).round();
     final stabilityPct = (stability.value * 100).round();
 
@@ -163,26 +163,32 @@ class InsightsController extends BaseController {
       pw.MultiPage(
         build: (_) => [
           pw.Text(
-            'MindPath $periodLabel Mood Summary',
+            'insights_pdf_title'.trParams({'period': periodLabel}),
             style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 10),
           pw.Text(
-            'Timeframe: ${start.toIso8601String()} → ${now.toIso8601String()}',
+            'insights_pdf_timeframe'.trParams({
+              'start': start.toIso8601String(),
+              'end': now.toIso8601String(),
+            }),
           ),
           pw.SizedBox(height: 8),
           pw.Text(
-            'Average mood: $scorePct% (${averageMoodValue.replaceAll('\n', ' ')})',
+            'insights_pdf_avg_mood'.trParams({
+              'score': '$scorePct%',
+              'label': averageMoodValue.replaceAll('\n', ' '),
+            }),
           ),
-          pw.Text('Stability: $stabilityPct%'),
+          pw.Text('${'insights_stability'.tr}: $stabilityPct%'),
           pw.SizedBox(height: 14),
           pw.Text(
-            'Recent entries',
+            'insights_pdf_recent_entries'.tr,
             style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 6),
           if (filtered.isEmpty)
-            pw.Text('No mood check-ins in this timeframe.')
+            pw.Text('insights_pdf_no_entries'.tr)
           else
             ...filtered.take(12).map((r) {
               final ts = r.timestamp?.toDate().toIso8601String() ?? '';
@@ -192,12 +198,12 @@ class InsightsController extends BaseController {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      '$ts • ${r.moodLabel.toUpperCase()} • score: ${r.moodScore.toStringAsFixed(1)}',
+                      '$ts • ${r.moodLabel.toUpperCase()} • ${'insights_pdf_score_label'.tr}: ${r.moodScore.toStringAsFixed(1)}',
                     ),
                     pw.Text(
-                      'sentiment: ${r.sentiment} • emotion: ${r.emotion}',
+                      '${'insights_pdf_sentiment_label'.tr}: ${r.sentiment} • ${'insights_pdf_emotion_label'.tr}: ${r.emotion}',
                     ),
-                    pw.Text('insight: ${r.insight}'),
+                    pw.Text('${'insights_pdf_insight_label'.tr}: ${r.insight}'),
                   ],
                 ),
               );

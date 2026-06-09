@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mindpath/core/base_controller.dart';
 import 'package:share_plus/share_plus.dart';

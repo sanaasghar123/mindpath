@@ -128,7 +128,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                                                   leading: const Icon(
                                                     Icons.camera_alt,
                                                   ),
-                                                  title: Text('Take Photo'.tr),
+                                                  title: Text('profile_take_photo'.tr),
                                                   onTap: () {
                                                     Get.back();
                                                     controller.pickImage(
@@ -141,7 +141,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                                                     Icons.photo_library,
                                                   ),
                                                   title: Text(
-                                                    'Choose from Gallery'.tr,
+                                                    'profile_choose_gallery'.tr,
                                                   ),
                                                   onTap: () {
                                                     Get.back();
@@ -161,7 +161,7 @@ class CompleteProfileView extends GetView<CompleteProfileController> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    'Tap to add profile picture'.tr,
+                                    'profile_tap_to_change'.tr,
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: AppColors.authTextSecondary,

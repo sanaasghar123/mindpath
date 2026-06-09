@@ -13,12 +13,15 @@ import 'package:mindpath/core/services/storage_service.dart';
 import 'package:mindpath/core/translations/app_translations.dart';
 import 'package:mindpath/features/profile/controllers/language_controller.dart';
 import 'package:mindpath/features/profile/controllers/theme_controller.dart';
+import 'package:mindpath/firebase_options.dart';
 import 'package:mindpath/utils/app_colors.dart';
 import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await GetStorage.init();
   await NotificationService().init();
   Get.lazyPut(() => SpeechService(), fenix: true);

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,7 @@ class AuthController extends BaseController {
     : _authService = authService ?? AuthService();
 
   final AuthService _authService;
+  StreamSubscription? _authSubscription;
 
   final firebaseUser = Rxn<User>();
 
@@ -20,9 +23,20 @@ class AuthController extends BaseController {
   void onInit() {
     super.onInit();
     firebaseUser.value = _authService.currentUser;
-    _authService.authStateChanges().listen((user) {
-      firebaseUser.value = user;
-    });
+    _authSubscription = _authService.authStateChanges().listen(
+      (user) {
+        firebaseUser.value = user;
+      },
+      onError: (_) {
+        firebaseUser.value = null;
+      },
+    );
+  }
+
+  @override
+  void onClose() {
+    _authSubscription?.cancel();
+    super.onClose();
   }
 
   bool get isLoggedIn => firebaseUser.value != null;

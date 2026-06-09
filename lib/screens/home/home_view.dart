@@ -610,16 +610,16 @@ class _CoreVibrationsCard extends StatelessWidget {
 }
 
 class _BreathingExercise {
-  final String title;
-  final String description;
-  final String duration;
+  final String titleKey;
+  final String descriptionKey;
+  final String durationKey;
   final IconData icon;
   final int totalSeconds;
 
   const _BreathingExercise({
-    required this.title,
-    required this.description,
-    required this.duration,
+    required this.titleKey,
+    required this.descriptionKey,
+    required this.durationKey,
     required this.icon,
     required this.totalSeconds,
   });
@@ -627,23 +627,23 @@ class _BreathingExercise {
 
 const _breathingExercises = [
   _BreathingExercise(
-    title: '4-7-8 Breathing',
-    description: 'A simple technique to calm your nervous system',
-    duration: '2 min',
+    titleKey: 'home_breathing_478_title',
+    descriptionKey: 'home_breathing_478_desc',
+    durationKey: 'home_breathing_478_duration',
     icon: Icons.self_improvement_rounded,
     totalSeconds: 120,
   ),
   _BreathingExercise(
-    title: 'Box Breathing',
-    description: 'Perfect for reducing stress and improving focus',
-    duration: '3 min',
+    titleKey: 'home_breathing_box_title',
+    descriptionKey: 'home_breathing_box_desc',
+    durationKey: 'home_breathing_box_duration',
     icon: Icons.square_rounded,
     totalSeconds: 180,
   ),
   _BreathingExercise(
-    title: 'Diaphragmatic Breathing',
-    description: 'Deep breathing for relaxation and anxiety relief',
-    duration: '5 min',
+    titleKey: 'home_breathing_diaphragmatic_title',
+    descriptionKey: 'home_breathing_diaphragmatic_desc',
+    durationKey: 'home_breathing_diaphragmatic_duration',
     icon: Icons.waves_rounded,
     totalSeconds: 300,
   ),
@@ -719,7 +719,7 @@ class _BreathingExercisesCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Breathing Exercises',
+              'home_breathing_title'.tr,
               style: const TextStyle(
                 fontWeight: FontWeight.w800,
                 color: AppColors.authTextPrimary,
@@ -727,8 +727,7 @@ class _BreathingExercisesCard extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             ..._breathingExercises
-                .map((exercise) => _BreathingExerciseCard(exercise: exercise))
-                .toList(),
+                .map((exercise) => _BreathingExerciseCard(exercise: exercise)),
           ],
         ),
       ),
@@ -750,7 +749,7 @@ class _BreathingExerciseCard extends StatelessWidget {
           Get.toNamed(
             '/activity-timer',
             arguments: {
-              'title': exercise.title,
+              'title': exercise.titleKey.tr,
               'activityType': 'breathing',
               'durationSeconds': exercise.totalSeconds,
             },
@@ -789,7 +788,7 @@ class _BreathingExerciseCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        exercise.title,
+                        exercise.titleKey.tr,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
@@ -798,7 +797,7 @@ class _BreathingExerciseCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        exercise.description,
+                        exercise.descriptionKey.tr,
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -822,7 +821,7 @@ class _BreathingExerciseCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     child: Text(
-                      exercise.duration,
+                        exercise.durationKey.tr,
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w900,

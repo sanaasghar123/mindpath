@@ -9,7 +9,7 @@ import 'package:mindpath/screens/profile/profile_view.dart';
 import 'package:mindpath/utils/app_colors.dart';
 
 class DashboardView extends GetView<DashboardController> {
-  DashboardView({super.key});
+  const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {

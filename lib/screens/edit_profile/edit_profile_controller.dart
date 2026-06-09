@@ -20,8 +20,9 @@ class EditProfileController extends BaseController {
       nameController.text = existing.name;
       if (existing.age != null) ageController.text = '${existing.age}';
       if (existing.gender != null) genderController.text = existing.gender!;
-      if (existing.profileImage != null)
+      if (existing.profileImage != null) {
         profileImageController.text = existing.profileImage!;
+      }
     }
   }
 
@@ -33,7 +34,7 @@ class EditProfileController extends BaseController {
         selectedImagePath.value = image.path;
       }
     } catch (e) {
-      Get.snackbar('common_failed'.tr, 'Failed to pick image');
+      Get.snackbar('common_failed'.tr, 'profile_image_pick_failed'.tr);
     }
   }
 
@@ -81,7 +82,9 @@ class EditProfileController extends BaseController {
         profileImage: profileImage,
       );
       Get.back();
-    } catch (_) {
+    } catch (e) {
+      setError('profile_save_failed'.tr);
+      Get.snackbar('common_failed'.tr, 'profile_save_failed'.tr);
     } finally {
       setLoading(false);
     }

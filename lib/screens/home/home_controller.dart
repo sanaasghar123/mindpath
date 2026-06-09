@@ -219,15 +219,14 @@ class HomeController extends BaseController {
     for (final r in records) {
       final e = r.emotion.toLowerCase();
       final s = r.sentiment.toLowerCase();
-      if (e.contains('stress') ||
-          e.contains('anxiety') ||
-          e.contains('overwhelm')) {
-        stress++;
-      } else if (s.contains('positive')) {
+      if (s.contains('positive')) {
         positive++;
       } else if (s.contains('neutral')) {
         neutral++;
-      } else {
+      } else if (e.contains('stress') ||
+          e.contains('anxiety') ||
+          e.contains('overwhelm') ||
+          s.contains('negative')) {
         stress++;
       }
     }

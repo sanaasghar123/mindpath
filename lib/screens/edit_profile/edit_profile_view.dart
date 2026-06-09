@@ -129,7 +129,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                         children: [
                                           ListTile(
                                             leading: const Icon(Icons.camera_alt),
-                                            title: Text('Take Photo'.tr),
+                                            title: Text('profile_take_photo'.tr),
                                             onTap: () {
                                               Get.back();
                                               controller.pickImage(ImageSource.camera);
@@ -137,7 +137,7 @@ class EditProfileView extends GetView<EditProfileController> {
                                           ),
                                           ListTile(
                                             leading: const Icon(Icons.photo_library),
-                                            title: Text('Choose from Gallery'.tr),
+                                            title: Text('profile_choose_gallery'.tr),
                                             onTap: () {
                                               Get.back();
                                               controller.pickImage(ImageSource.gallery);
@@ -154,7 +154,7 @@ class EditProfileView extends GetView<EditProfileController> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Tap to change profile picture'.tr,
+                              'profile_tap_to_change'.tr,
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.authTextSecondary,

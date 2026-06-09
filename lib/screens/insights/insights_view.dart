@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mindpath/core/app_routes.dart';
 import 'package:mindpath/core/models/mood_record.dart';
 import 'package:mindpath/screens/insights/insights_controller.dart';
@@ -49,7 +50,7 @@ class InsightsView extends GetView<InsightsController> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Text(
-                              'No journal history yet. Add a mood check-in to see insights here.',
+                              'insights_no_history'.tr,
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.4,
@@ -299,27 +300,27 @@ class _QuickStatsGrid extends StatelessWidget {
         children: [
           _QuickStatCard(
             icon: Icons.sentiment_satisfied_rounded,
-            title: 'Average Mood',
+            title: 'insights_avg_mood'.tr,
             value: '$avg%',
             subtitle: label,
           ),
           _QuickStatCard(
             icon: Icons.bar_chart_rounded,
-            title: 'Stability',
+            title: 'insights_stability'.tr,
             value: '$stability%',
-            subtitle: 'Consistency',
+            subtitle: 'insights_consistency'.tr,
           ),
           _QuickStatCard(
             icon: Icons.calendar_today_rounded,
-            title: 'Check-ins',
+            title: 'insights_checkins'.tr,
             value: checkins.toString(),
-            subtitle: 'Total entries',
+            subtitle: 'insights_total_entries'.tr,
           ),
           _QuickStatCard(
             icon: Icons.auto_awesome_rounded,
-            title: 'Streak',
+            title: 'insights_streak'.tr,
             value: '7',
-            subtitle: 'Current streak',
+            subtitle: 'insights_current_streak'.tr,
           ),
         ],
       );
@@ -616,9 +617,9 @@ class _JournalHistoryHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Text(
-            'Journal History',
+            'insights_journal_history'.tr,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
@@ -628,8 +629,8 @@ class _JournalHistoryHeader extends StatelessWidget {
         ),
         Obx(() {
           final label = controller.showAllHistory.value
-              ? 'Show Less'
-              : 'View All';
+              ? 'insights_show_less'.tr
+              : 'insights_view_all'.tr;
           return TextButton(
             onPressed: controller.toggleHistoryViewAll,
             style: TextButton.styleFrom(
@@ -656,18 +657,19 @@ class _JournalEntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ts = entry.timestamp?.toDate();
-    final dateLabel = ts == null ? 'Pending...' : _formatDate(ts);
+    final dateLabel = ts == null ? 'insights_pending'.tr : _formatDate(ts);
     final moodLabel = entry.moodLabel.trim().isEmpty
         ? entry.emotion.toUpperCase()
         : entry.moodLabel.toUpperCase();
 
-    final chipFg = moodLabel == 'GRATEFUL'
+    final raw = entry.emotion.toUpperCase();
+    final chipFg = raw == 'GRATEFUL'
         ? const Color(0xFF16A34A)
-        : moodLabel == 'NEUTRAL'
+        : raw == 'NEUTRAL'
         ? const Color(0xFF334155)
-        : moodLabel == 'DOWN'
+        : raw == 'DOWN'
         ? const Color(0xFFB91C1C)
-        : moodLabel == 'TENSE'
+        : raw == 'TENSE'
         ? const Color(0xFFB45309)
         : AppColors.dashboardBrand;
     final chipBg = chipFg.withValues(alpha: 0.10);
@@ -723,7 +725,7 @@ class _JournalEntryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Mood Check-in',
+                          'insights_mood_checkin'.tr,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w900,
@@ -788,24 +790,13 @@ class _JournalEntryCard extends StatelessWidget {
 }
 
 String _formatDate(DateTime dt) {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-  final m = dt.minute.toString().padLeft(2, '0');
-  final suffix = dt.hour >= 12 ? 'PM' : 'AM';
-  return '${months[dt.month - 1]} ${dt.day} • $h:$m $suffix';
+  final loc = Get.locale;
+  final localeName = (loc == null)
+      ? null
+      : (loc.countryCode == null || loc.countryCode!.isEmpty)
+          ? loc.languageCode
+          : '${loc.languageCode}_${loc.countryCode}';
+  return '${DateFormat.yMMMd(localeName).format(dt)} • ${DateFormat.jm(localeName).format(dt)}';
 }
 
 class _WeeklyMilestoneCard extends StatelessWidget {
@@ -874,7 +865,7 @@ class _WeeklyMilestoneCard extends StatelessWidget {
                       left: 12,
                       top: 12,
                       child: Text(
-                        'WEEKLY MILESTONE',
+                        'insights_weekly_milestone'.tr,
                         style: TextStyle(
                           fontSize: 10,
                           letterSpacing: 1.2,

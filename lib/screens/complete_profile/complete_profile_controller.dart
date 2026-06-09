@@ -46,7 +46,7 @@ class CompleteProfileController extends BaseController {
         selectedImagePath.value = image.path;
       }
     } catch (e) {
-      Get.snackbar('common_failed'.tr, 'Failed to pick image');
+      Get.snackbar('common_failed'.tr, 'profile_image_pick_failed'.tr);
     }
   }
 
@@ -94,7 +94,9 @@ class CompleteProfileController extends BaseController {
       );
       await Get.find<AuthController>().scheduleDailyRemindersIfEnabled();
       Get.toNamed(AppRoutes.moodCheck);
-    } catch (_) {
+    } catch (e) {
+      setError('profile_save_failed'.tr);
+      Get.snackbar('common_failed'.tr, 'profile_save_failed'.tr);
     } finally {
       setLoading(false);
     }
