@@ -2,7 +2,7 @@ class AppConfig {
   AppConfig._();
 
   static const String openRouterApiKey =
-      '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';
+      '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';
 
   static const String openRouterModel =
       'liquid/lfm-2.5-1.2b-instruct:free';
